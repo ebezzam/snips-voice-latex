@@ -5,8 +5,8 @@ MQTT_IP_ADDR = "localhost"
 MQTT_PORT = 1883
 MQTT_ADDR = "{}:{}".format(MQTT_IP_ADDR, str(MQTT_PORT))
 
-INTENT_INTEGRAL = "integral"
-INTENT_CREATE_MATRIX = "create_matrix"
+INTENT_INTEGRAL = "bezzam:integral"
+INTENT_CREATE_MATRIX = "bezzam:create_matrix"
 
 
 def user_give_integral(hermes, intent_message):
@@ -29,8 +29,8 @@ def intent_received(hermes, intent_message):
 
     hermes.publish_end_session(intent_message.session_id, sentence)
 
-
-with Hermes(MQTT_ADDR) as h:
-    h.subscribe_intents(intent_received).start()
-    # h.subscribe_intent(INTENT_INTEGRAL, user_give_integral).start()
-    # h.subscribe_intent(INTENT_CREATE_MATRIX, user_create_matrix).start()
+if __name__ == "__main__":
+    with Hermes(MQTT_ADDR) as h:
+        # h.subscribe_intents(intent_received).start()
+        # h.subscribe_intent(INTENT_INTEGRAL, user_give_integral).start()
+        h.subscribe_intent(INTENT_CREATE_MATRIX, user_create_matrix).start()
