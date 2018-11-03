@@ -9,7 +9,7 @@ INTENT_INTEGRAL = "integral"
 
 
 def user_give_integral(hermes, intent_message):
-    sentence = "You asked for an integral."
+    sentence = "Hello, you asked for an integral."
     hermes.publish_end_session(intent_message.session_id, sentence)
 
 
