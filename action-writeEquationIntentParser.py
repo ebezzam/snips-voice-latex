@@ -29,8 +29,8 @@ def intent_received(hermes, intent_message):
 
     hermes.publish_end_session(intent_message.session_id, sentence)
 
-if __name__ == "__main__":
-    with Hermes(MQTT_ADDR) as h:
-        # h.subscribe_intents(intent_received).start()
-        # h.subscribe_intent(INTENT_INTEGRAL, user_give_integral).start()
-        h.subscribe_intent(INTENT_CREATE_MATRIX, user_create_matrix).start()
+# if __name__ == "__main__":
+with Hermes(MQTT_ADDR) as h:
+    # h.subscribe_intents(intent_received).start()
+    # h.subscribe_intent(INTENT_INTEGRAL, user_give_integral).start()
+    h.subscribe_intent(INTENT_CREATE_MATRIX, user_create_matrix).start()
