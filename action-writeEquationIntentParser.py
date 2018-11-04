@@ -93,10 +93,13 @@ def integrate_function(hermes, intent_message):
     # add lower and upper bound to payload
     # lower_bound = int(intent_message.slots.lower_bound.first().value)
     # upper_bound = int(intent_message.slots.upper_bound.first().value)
-    lower_bound = None if intent_message.slots.lower_bound is None else intent_message.slots.lower_bound.first().value
-    upper_bound = None if intent_message.slots.upper_bound is None else intent_message.slots.upper_bound.first().value
-    poly[session_id]["lower_bound"] = lower_bound
-    poly[session_id]["upper_bound"] = upper_bound
+    # lower_bound = None if intent_message.slots.lower_bound is None else intent_message.slots.lower_bound.first().value
+    # upper_bound = None if intent_message.slots.upper_bound is None else intent_message.slots.upper_bound.first().value
+    # poly[session_id]["lower_bound"] = lower_bound
+    # poly[session_id]["upper_bound"] = upper_bound
+
+    poly[session_id]["lower_bound"] = None if not intent_message.slots.lower_bound else int(intent_message.slots.lower_bound.first().value)
+    poly[session_id]["upper_bound"] = None if not intent_message.slots.upper_bound else int(intent_message.slots.upper_bound.first().value)
 
     tts = "OK, writing the integral of this function."
 
@@ -279,7 +282,7 @@ def matrix_finish(hermes, intent_message):
     hermes.publish_end_session(session_id, tts)
 
 
-def user_stop(hermes, intent_message)
+def user_stop(hermes, intent_message):
     session_id = intent_message.session_id
 
     try:
