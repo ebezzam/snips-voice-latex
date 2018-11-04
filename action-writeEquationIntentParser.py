@@ -25,18 +25,16 @@ INTENT_MATRIX_MULT = "bezzam:matrix_mult"
 INTENT_MATRIX_FINISH = "bezzam:finish_matrix"
 INTENT_MATRIX_INVERSE = "bezzam:matrix_inverse"
 
+STOP_INTENT = "bezzam:stop_intent"
+
 # intent filters for interactive dialogues
-INTENT_FILTER_ENTRIES = [INTENT_DICTATE_MATRIX, INTENT_RANDOM_MATRIX]
-INTENT_FILTER_MATRIX_OP = [INTENT_MATRIX_MULT, INTENT_MATRIX_INVERSE, INTENT_MATRIX_FINISH]
-INTENT_FILTER_POLY = [INTENT_POLY_COEF]
-INTENT_FILTER_OPERATION = [INTENT_INTEGRATE, INTENT_DERIVATE, INTENT_FINISH]
+INTENT_FILTER_ENTRIES = [INTENT_DICTATE_MATRIX, INTENT_RANDOM_MATRIX, STOP_INTENT]
+INTENT_FILTER_MATRIX_OP = [INTENT_MATRIX_MULT, INTENT_MATRIX_INVERSE, INTENT_MATRIX_FINISH, STOP_INTENT]
+INTENT_FILTER_POLY = [INTENT_POLY_COEF, STOP_INTENT]
+INTENT_FILTER_OPERATION = [INTENT_INTEGRATE, INTENT_DERIVATE, INTENT_FINISH, STOP_INTENT]
 
 entries = dict()
 poly = dict()
-
-def user_give_integral(hermes, intent_message):
-    sentence = "Hello, you asked for an integral."
-    hermes.publish_end_session(intent_message.session_id, sentence)
 
 
 def user_write_poly(hermes, intent_message):
@@ -93,8 +91,10 @@ def integrate_function(hermes, intent_message):
     poly[session_id]["operation"] = "integral"
 
     # add lower and upper bound to payload
-    lower_bound = int(intent_message.slots.lower_bound.first().value)
-    upper_bound = int(intent_message.slots.upper_bound.first().value)
+    # lower_bound = int(intent_message.slots.lower_bound.first().value)
+    # upper_bound = int(intent_message.slots.upper_bound.first().value)
+    lower_bound = None if intent_message.slots.lower_bound is None else intent_message.slots.lower_bound.first().value
+    upper_bound = None if intent_message.slots.upper_bound is None else intent_message.slots.upper_bound.first().value
     poly[session_id]["lower_bound"] = lower_bound
     poly[session_id]["upper_bound"] = upper_bound
 
@@ -279,6 +279,22 @@ def matrix_finish(hermes, intent_message):
     hermes.publish_end_session(session_id, tts)
 
 
+def user_stop(hermes, intent_message)
+    session_id = intent_message.session_id
+
+    try:
+        del entries[session_id]
+    except:
+        pass
+
+    try:
+        del poly[session_id]
+    except:
+        pass
+
+    hermes.publish_end_session(session_id, "Ending session.")
+
+
 # if __name__ == "__main__":
 with Hermes(MQTT_ADDR) as h:
     h.subscribe_intent(INTENT_CREATE_MATRIX, user_create_matrix) \
@@ -292,4 +308,5 @@ with Hermes(MQTT_ADDR) as h:
      .subscribe_intent(INTENT_MATRIX_MULT, matrix_mult) \
      .subscribe_intent(INTENT_MATRIX_FINISH, matrix_finish) \
      .subscribe_intent(INTENT_MATRIX_INVERSE, matrix_inverse) \
+     .subscribe_intent(STOP_INTENT, user_stop) \
      .subscribe_intent(INTENT_DICTATE_MATRIX, user_dictate_matrix).start()
